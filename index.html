@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASTRO - Vidriería y Acabados Arquitectónicos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --azul-profundo: #020617;
+            --celeste-vidrio: #38bdf8;
+            --celeste-glow: rgba(56, 189, 248, 0.4);
+            --dorado-brillo: #f59e0b;
+            --dorado-metal: #d97706;
+            --blanco-puro: #ffffff;
+            --texto-claro: #f8fafc;
+            --texto-mutado: #94a3b8;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(56, 189, 248, 0.25);
+            --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--azul-profundo);
+            color: var(--texto-claro);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-glow-container { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: #020617; }
+        .glow-orb-1 {
+            position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(3, 105, 161, 0.05) 50%, transparent 70%);
+            filter: blur(80px); animation: floatOrb 12s infinite alternate ease-in-out;
+        }
+        .glow-orb-2 {
+            position: absolute; bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(180, 83, 9, 0.05) 50%, transparent 70%);
+            filter: blur(100px); animation: floatOrb 15s infinite alternate-reverse ease-in-out;
+        }
+        .bg-grid-overlay {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 40px) scale(1.1); } }
+
+        a { text-decoration: none; color: inherit; }
+
+        header {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(2, 6, 23, 0.92);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 12px 6%;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .marca { display: flex; align-items: center; gap: 14px; }
+        .logo-svg { width: 48px; height: 48px; filter: drop-shadow(0 0 10px var(--celeste-vidrio)); transition: var(--transition); }
+        .marca:hover .logo-svg { transform: scale(1.1) rotate(4deg); filter: drop-shadow(0 0 18px var(--celeste-vidrio)); }
+        .marca-texto h2 {
+            font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 30%, var(--celeste-vidrio) 100%);
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .marca-texto p { font-size: 10px; color: var(--dorado-brillo); letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; }
+
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a, nav button.nav-admin-btn { font-size: 14px; font-weight: 500; color: var(--texto-mutado); transition: var(--transition); background: none; border: none; cursor: pointer; font-family: inherit; }
+        nav a:hover, nav button.nav-admin-btn:hover { color: var(--blanco-puro); }
+        .nav-btn {
+            background: linear-gradient(135deg, var(--dorado-brillo), var(--dorado-metal));
+            color: var(--azul-profundo) !important; padding: 9px 20px; border-radius: 30px;
+            font-weight: 700 !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(245, 158, 11, 0.6); }
+        .nav-admin-btn {
+            border: 1px solid rgba(56, 189, 248, 0.4) !important;
+            padding: 7px 14px !important;
+            border-radius: 20px;
+            color: var(--celeste-vidrio) !important;
+            font-weight: 600 !important;
+        }
+        .nav-admin-btn.active-admin {
+            background: rgba(56, 189, 248, 0.2) !important;
+            color: #fff !important;
+        }
+
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .menu-toggle span { width: 25px; height: 3px; background-color: var(--texto-claro); border-radius: 2px; }
+
+        /* HERO */
+        .hero { position: relative; min-height: 85vh; display: flex; align-items: center; padding: 60px 7%; overflow: hidden; }
+        .hero-bg { position: absolute; inset: 0; z-index: -1; }
+        .hero-bg svg { position: absolute; right: 0; top: 0; width: 70%; height: 100%; }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, var(--azul-profundo) 30%, rgba(2, 6, 23, 0.55) 65%, transparent 100%);
+        }
+        .hero-content { max-width: 780px; z-index: 2; position: relative; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4);
+            color: var(--celeste-vidrio); padding: 6px 16px; border-radius: 30px;
+            font-size: 13px; font-weight: 600; margin-bottom: 24px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+        .badge-dot { width: 8px; height: 8px; background: var(--celeste-vidrio); border-radius: 50%; box-shadow: 0 0 10px var(--celeste-vidrio); }
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(38px, 5.5vw, 62px);
+            font-weight: 700; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 18px; color: var(--texto-mutado); margin-bottom: 36px; max-width: 640px; }
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 14px;
+            cursor: pointer; border: none; transition: var(--transition); font-family: inherit;
+        }
+        .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--dorado-brillo), var(--dorado-metal)); color: var(--azul-profundo); box-shadow: 0 8px 25px rgba(245, 158, 11, 0.35); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(245, 158, 11, 0.55); }
+        .btn-secondary { background: #25d366; color: white; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); }
+        .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5); }
+        .btn-outline-wa {
+            background: rgba(37, 211, 102, 0.14); color: #4ade80;
+            border: 1px solid rgba(37, 211, 102, 0.5);
+        }
+        .btn-outline-wa:hover { background: #25d366; color: white; transform: translateY(-2px); }
+        .btn-info { background: rgba(56, 189, 248, 0.18); color: var(--celeste-vidrio); border: 1px solid rgba(56, 189, 248, 0.45); }
+        .btn-info:hover { background: var(--celeste-vidrio); color: var(--azul-profundo); }
+        .btn-danger { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.45); }
+        .btn-danger:hover { background: #ef4444; color: #fff; }
+
+        .features-strip {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+            padding: 0 7%; margin-top: -40px; position: relative; z-index: 10;
+        }
+        .feature-item {
+            background: rgba(15, 23, 42, 0.85); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px); border-radius: var(--radius-md); padding: 20px;
+            display: flex; align-items: center; gap: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .feature-icon {
+            font-size: 26px; background: rgba(56, 189, 248, 0.15); width: 50px; height: 50px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .feature-text h4 { font-size: 15px; font-weight: 700; }
+        .feature-text p { font-size: 12px; color: var(--texto-mutado); }
+
+        section { padding: 90px 7%; }
+        .section-header { text-align: center; max-width: 700px; margin: 0 auto 55px; }
+        .section-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 4vw, 42px); margin-bottom: 12px; letter-spacing: -0.5px; }
+        .divider { width: 80px; height: 4px; background: linear-gradient(90deg, var(--celeste-vidrio), var(--dorado-brillo)); margin: 16px auto; border-radius: 4px; box-shadow: 0 0 10px var(--celeste-glow); }
+
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+        .card-glass {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            overflow: hidden; backdrop-filter: blur(16px); box-shadow: var(--glass-shadow);
+            display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition);
+            position: relative;
+        }
+        .card-glass:hover { transform: translateY(-8px); border-color: rgba(56, 189, 248, 0.6); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.25); }
+
+        .card-img-wrapper {
+            position: relative; height: 230px; overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), transparent 65%),
+                linear-gradient(180deg, #0b1b34 0%, #020617 100%);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .card-img-wrapper svg, .card-img-wrapper img.foto {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            transition: transform 0.5s ease;
+        }
+        .card-img-wrapper img.foto { object-fit: cover; }
+        .card-glass:hover .card-img-wrapper svg,
+        .card-glass:hover .card-img-wrapper img.foto { transform: scale(1.07); }
+        .card-tag {
+            position: absolute; top: 12px; left: 12px; z-index: 2;
+            background: rgba(2, 6, 23, 0.78); border: 1px solid rgba(56, 189, 248, 0.4);
+            color: var(--celeste-vidrio); font-size: 11px; font-weight: 700;
+            padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+
+        .card-admin-bar {
+            position: absolute; top: 12px; right: 12px; z-index: 3;
+            display: flex; gap: 6px;
+        }
+
+        .card-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+        .card-body h3 { font-size: 20px; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif; }
+        .card-body p { color: var(--texto-mutado); font-size: 14px; margin-bottom: 20px; }
+        .card-link { color: var(--celeste-vidrio); font-weight: 700; font-size: 14px; cursor: pointer; margin-top: auto; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition); }
+        .card-link:hover { gap: 10px; color: var(--blanco-puro); }
+
+        /* OPINIONES */
+        .opiniones-section {
+            background: linear-gradient(180deg, rgba(2, 6, 23, 0.95) 0%, rgba(15, 23, 42, 0.6) 100%);
+            border-top: 1px solid var(--glass-border);
+        }
+        .rating-summary {
+            display: none; align-items: center; justify-content: center; gap: 14px;
+            margin: -30px auto 40px; font-family: 'Space Grotesk', sans-serif;
+        }
+        .rating-summary.show { display: flex; }
+        .rating-big { font-size: 40px; font-weight: 700; color: var(--dorado-brillo); }
+        .rating-stars { color: var(--dorado-brillo); font-size: 20px; letter-spacing: 2px; }
+        .rating-count { font-size: 13px; color: var(--texto-mutado); font-family: 'Plus Jakarta Sans', sans-serif; }
+        .opinion-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 26px; backdrop-filter: blur(16px); box-shadow: var(--glass-shadow);
+            display: flex; flex-direction: column; gap: 14px; transition: var(--transition);
+        }
+        .opinion-card:hover { transform: translateY(-6px); border-color: rgba(245, 158, 11, 0.5); }
+        .opinion-stars { color: var(--dorado-brillo); font-size: 18px; letter-spacing: 2px; }
+        .opinion-text { color: var(--texto-claro); font-size: 15px; font-style: italic; }
+        .opinion-author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+        .opinion-avatar {
+            width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--celeste-vidrio), #0369a1);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #fff;
+        }
+        .opinion-author h4 { font-size: 14px; }
+        .opinion-author span { font-size: 12px; color: var(--texto-mutado); }
+        .opinion-empty {
+            grid-column: 1 / -1; text-align: center; padding: 40px 20px;
+            border: 1px dashed var(--glass-border); border-radius: var(--radius-lg);
+            color: var(--texto-mutado);
+        }
+        .opinion-form-card {
+            max-width: 720px; margin: 50px auto 0;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 32px; backdrop-filter: blur(16px); box-shadow: var(--glass-shadow);
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .opinion-form-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; }
+        .opinion-form-card > p { font-size: 13px; color: var(--texto-mutado); }
+
+        /* PANEL ADMIN */
+        .admin-panel-section {
+            display: none;
+            background: linear-gradient(180deg, rgba(8, 19, 38, 0.96), rgba(2, 6, 23, 0.98));
+            border-bottom: 2px solid var(--dorado-brillo);
+            padding: 45px 7%;
+        }
+        .admin-panel-section.open { display: block; }
+        .admin-container {
+            max-width: 1100px; margin: 0 auto;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+        }
+        .admin-header {
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+            gap: 16px; padding-bottom: 20px; margin-bottom: 24px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .admin-header h2 {
+            font-family: 'Space Grotesk', sans-serif; font-size: 24px;
+            color: var(--dorado-brillo);
+        }
+        .admin-toolbar { display: flex; flex-wrap: wrap; gap: 10px; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 28px; }
+        .admin-grid + .admin-grid { margin-top: 36px; padding-top: 30px; border-top: 1px solid var(--glass-border); }
+        .admin-form-box {
+            background: rgba(2, 6, 23, 0.85);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 22px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .admin-form-box h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--celeste-vidrio); }
+        .admin-list-box {
+            display: flex; flex-direction: column; gap: 12px;
+            max-height: 520px; overflow-y: auto; padding-right: 4px;
+        }
+        .admin-item {
+            display: flex; align-items: center; justify-content: space-between; gap: 14px;
+            background: rgba(2, 6, 23, 0.85);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 12px 14px;
+        }
+        .admin-item-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .admin-thumb {
+            width: 56px; height: 44px; border-radius: 8px; object-fit: cover;
+            background: #0b1b34; border: 1px solid var(--glass-border); flex-shrink: 0;
+        }
+        .admin-item-text h4 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+        .admin-item-text span { font-size: 11px; color: var(--texto-mutado); }
+        .admin-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .admin-hint { font-size: 12px; color: var(--texto-mutado); }
+
+        /* MODAL LOGIN ADMIN */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal-card {
+            background: #0f172a; border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); padding: 30px; width: 100%; max-width: 400px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+        }
+        .modal-card h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 8px; font-size: 22px; }
+        .modal-card p { font-size: 13px; color: var(--texto-mutado); margin-bottom: 18px; }
+
+        .calculator-section {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%);
+            border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); position: relative;
+        }
+        .calc-wrapper {
+            display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 40px; backdrop-filter: blur(20px); box-shadow: var(--glass-shadow);
+        }
+        .calc-form { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--texto-claro); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-control {
+            width: 100%; padding: 12px 14px; background: rgba(2, 6, 23, 0.9);
+            border: 1px solid var(--glass-border); border-radius: 10px; color: var(--blanco-puro);
+            font-size: 14px; outline: none; transition: var(--transition); font-family: inherit;
+        }
+        .form-control:focus { border-color: var(--celeste-vidrio); box-shadow: 0 0 12px var(--celeste-glow); }
+        textarea.form-control { resize: vertical; min-height: 76px; }
+
+        .calc-results {
+            background: rgba(2, 6, 23, 0.9); border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: var(--radius-md); padding: 32px; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .calc-preview {
+            height: 130px; border-radius: 10px; margin-bottom: 20px; position: relative; overflow: hidden;
+            background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.2), transparent 65%), linear-gradient(180deg, #0b1b34, #020617);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-glass-sheet {
+            border: 4px solid var(--alu-color, #cbd5e1);
+            background: linear-gradient(135deg, rgba(125, 211, 252, 0.35), rgba(3, 105, 161, 0.25));
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
+            color: var(--blanco-puro); transition: var(--transition);
+        }
+        .metric-box-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
+        .metric-box { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--glass-border); border-radius: 10px; padding: 16px; text-align: center; }
+        .metric-label { font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .metric-value { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--celeste-vidrio); }
+        .summary-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; font-size: 14px; color: var(--texto-mutado); }
+        .summary-item { display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed rgba(255, 255, 255, 0.08); }
+        .summary-item span:last-child { color: var(--texto-claro); font-weight: 600; text-align: right; max-width: 60%; }
+
+        .wa-dual-btns { display: flex; flex-direction: column; gap: 10px; }
+
+        .contact-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 40px; text-align: center; max-width: 680px; margin: 0 auto;
+            backdrop-filter: blur(16px); box-shadow: var(--glass-shadow);
+        }
+        .numbers-list { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+        .phone-box {
+            background: rgba(2, 6, 23, 0.85); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md); padding: 22px 18px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            transition: var(--transition);
+        }
+        .phone-box:hover { border-color: var(--celeste-vidrio); transform: translateY(-4px); }
+        .phone-tag {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--dorado-brillo); background: rgba(245, 158, 11, 0.12);
+            padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .phone-number {
+            font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700;
+            color: var(--blanco-puro); letter-spacing: 1px;
+        }
+        .phone-actions { display: flex; gap: 10px; width: 100%; }
+        .phone-actions a { flex: 1; padding: 10px 12px; font-size: 13px; border-radius: 10px; }
+
+        footer { background: rgba(2, 6, 23, 0.98); border-top: 1px solid var(--glass-border); padding: 40px 7%; text-align: center; font-size: 14px; color: var(--texto-mutado); }
+        footer p + p { margin-top: 8px; }
+
+        @media (max-width: 900px) {
+            .calc-wrapper, .admin-grid { grid-template-columns: 1fr; padding: 22px; }
+            .numbers-list { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .hero-bg svg { width: 100%; opacity: 0.5; }
+            nav {
+                display: none; position: absolute; top: 100%; left: 0; width: 100%;
+                background: rgba(2, 6, 23, 0.96); backdrop-filter: blur(20px);
+                flex-direction: column; padding: 20px; border-bottom: 1px solid var(--glass-border);
+            }
+            nav.active { display: flex; }
+            .menu-toggle { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.45"/>
+                <stop offset="0.5" stop-color="#38bdf8" stop-opacity="0.18"/>
+                <stop offset="1" stop-color="#0369a1" stop-opacity="0.35"/>
+            </linearGradient>
+            <linearGradient id="glassDark" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#94a3b8" stop-opacity="0.35"/>
+                <stop offset="1" stop-color="#0f172a" stop-opacity="0.6"/>
+            </linearGradient>
+            <linearGradient id="alu" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e2e8f0"/>
+                <stop offset="0.5" stop-color="#94a3b8"/>
+                <stop offset="1" stop-color="#475569"/>
+            </linearGradient>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fcd34d"/>
+                <stop offset="1" stop-color="#d97706"/>
+            </linearGradient>
+            <linearGradient id="mirror" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e0f2fe"/>
+                <stop offset="0.5" stop-color="#7dd3fc"/>
+                <stop offset="1" stop-color="#1e3a5f"/>
+            </linearGradient>
+            <pattern id="frost" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="rgba(226,232,240,0.14)"/>
+                <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.35)"/>
+                <circle cx="6" cy="6" r="1" fill="rgba(255,255,255,0.25)"/>
+            </pattern>
+            <filter id="glowf" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="5"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="bg-glow-container">
+        <div class="glow-orb-1"></div>
+        <div class="glow-orb-2"></div>
+    </div>
+    <div class="bg-grid-overlay"></div>
+
+    <header>
+        <a href="#inicio" class="marca">
+            <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" stroke="#38bdf8" stroke-width="3" fill="rgba(56, 189, 248, 0.15)"/>
+                <polygon points="50,10 85,30 50,50 15,30" fill="rgba(255, 255, 255, 0.2)"/>
+                <polygon points="50,50 85,30 85,70 50,90" fill="rgba(56, 189, 248, 0.3)"/>
+                <polygon points="15,30 50,50 50,90 15,70" fill="rgba(3, 105, 161, 0.5)"/>
+                <path d="M30 20 L70 80" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="70" cy="80" r="3" fill="#f59e0b"/>
+            </svg>
+            <div class="marca-texto">
+                <h2>VIDRIOS Y ALUMINIOS CASTRO</h2>
+                <p>ACABADOS EN CRISTAL Y ALUMINIO</p>
+            </div>
+        </a>
+
+        <div class="menu-toggle" id="mobile-menu-btn"><span></span><span></span><span></span></div>
+
+        <nav id="nav-menu">
+            <a href="#inicio">Inicio</a>
+            <a href="#productos">Productos</a>
+            <a href="#opiniones">Opiniones</a>
+            <a href="#cotizador">Calculadora Técnica</a>
+            <a href="#contacto">Contacto</a>
+            <button type="button" class="nav-admin-btn" id="btn-open-admin" onclick="toggleAdminAccess()">⚙️ Admin</button>
+            <a href="#cotizador" class="nav-btn">Cotizar Proyecto</a>
+        </nav>
+    </header>
+
+    <!-- MODAL ACCESO ADMIN -->
+    <div class="modal-backdrop" id="admin-login-modal">
+        <div class="modal-card">
+            <h3>Acceso Administrador</h3>
+            <p>Ingresa la clave para editar, agregar o eliminar productos y opiniones.</p>
+            <form onsubmit="event.preventDefault(); verifyAdminPassword();">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="admin-pass-input">Contraseña</label>
+                    <input type="password" id="admin-pass-input" class="form-control" placeholder="Escribe la contraseña..." required>
+                </div>
+                <p id="admin-login-error" style="color: #f87171; font-size: 12px; display: none; margin-bottom: 12px;">Contraseña incorrecta.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Ingresar</button>
+                    <button type="button" class="btn btn-info btn-sm" onclick="closeLoginModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <section class="admin-panel-section" id="admin-panel">
+        <div class="admin-container">
+            <div class="admin-header">
+                <div>
+                    <h2>⚙️ Panel de Administración</h2>
+                    <p class="admin-hint">Edita productos y opiniones. Al terminar, descarga el INDEX.HTML actualizado y súbelo a tu hosting para que todos lo vean.</p>
+                </div>
+                <div class="admin-toolbar">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="prepareNewProduct()">➕ Nuevo Producto</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="exportUpdatedHTML()">💾 Descargar INDEX.HTML actualizado</button>
+                    <button type="button" class="btn btn-info btn-sm" onclick="resetDefaultProducts()">↺ Restaurar fábrica</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="logoutAdmin()">Cerrar Admin</button>
+                </div>
+            </div>
+
+            <!-- PRODUCTOS -->
+            <div class="admin-grid">
+                <form class="admin-form-box" id="admin-product-form" onsubmit="event.preventDefault(); saveProductFromAdmin();">
+                    <h3 id="admin-form-title">Editar Producto</h3>
+                    <input type="hidden" id="edit-product-id">
+
+                    <div class="form-group">
+                        <label for="edit-title">Nombre del Producto</label>
+                        <input type="text" id="edit-title" class="form-control" placeholder="Ej. Ventanas Herméticas de Aluminio" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-tag">Etiqueta superior (Tag)</label>
+                        <input type="text" id="edit-tag" class="form-control" placeholder="Ej. Templado 8 – 12 mm" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-desc">Descripción</label>
+                        <textarea id="edit-desc" class="form-control" placeholder="Descripción técnica del producto..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-image">Ruta de la imagen (carpeta IMAGES)</label>
+                        <input type="text" id="edit-image" class="form-control" placeholder="Ej. IMAGES/ventanas.jpg">
+                        <span class="admin-hint">Disponibles: IMAGES/ventanas.jpg, IMAGES/puertas.jpg, IMAGES/MANPARA.jpg, IMAGES/espejos.jpg, IMAGES/barandillas.jpg, IMAGES/muro-cortina.jpg. Los productos nuevos usan una ilustración hasta que les pongas foto.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-image-file">O subir foto desde tu PC (opcional)</label>
+                        <input type="file" id="edit-image-file" class="form-control" accept="image/*" onchange="handleImageUpload(event)">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 6px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">✅ Guardar Cambios</button>
+                        <button type="button" class="btn btn-info" onclick="prepareNewProduct()">Limpiar</button>
+                    </div>
+                </form>
+
+                <div>
+                    <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 12px;">Productos Actuales (<span id="admin-count">0</span>)</h3>
+                    <div class="admin-list-box" id="admin-product-list"></div>
+                </div>
+            </div>
+
+            <!-- OPINIONES -->
+            <div class="admin-grid">
+                <form class="admin-form-box" id="admin-opinion-form" onsubmit="event.preventDefault(); saveOpinionFromAdmin();">
+                    <h3 id="op-form-title">Agregar Opinión de Cliente</h3>
+                    <p class="admin-hint">Publica solo opiniones reales que tus clientes te hayan enviado (por WhatsApp, reseña, etc.) y con su permiso.</p>
+                    <input type="hidden" id="op-edit-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="op-name">Nombre del cliente</label>
+                            <input type="text" id="op-name" class="form-control" placeholder="Ej. Nombre y apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="op-rating">Calificación</label>
+                            <select id="op-rating" class="form-control">
+                                <option value="5">★★★★★ (5)</option>
+                                <option value="4">★★★★☆ (4)</option>
+                                <option value="3">★★★☆☆ (3)</option>
+                                <option value="2">★★☆☆☆ (2)</option>
+                                <option value="1">★☆☆☆☆ (1)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="op-project">Obra / Producto (opcional)</label>
+                        <input type="text" id="op-project" class="form-control" placeholder="Ej. Mampara de baño, Distrito/Ciudad">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="op-text">Opinión del cliente</label>
+                        <textarea id="op-text" class="form-control" placeholder="Pega aquí lo que escribió el cliente..." required></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 6px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">✅ Publicar Opinión</button>
+                        <button type="button" class="btn btn-info" onclick="prepareNewOpinion()">Limpiar</button>
+                    </div>
+                </form>
+
+                <div>
+                    <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 12px;">Opiniones Publicadas (<span id="op-count">0</span>)</h3>
+                    <div class="admin-list-box" id="admin-opinion-list"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero" id="inicio">
+        <div class="hero-bg">
+            <svg viewBox="0 0 700 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <g transform="translate(120 40)">
+                    <polygon points="120,60 360,20 380,470 140,520" fill="url(#glass)" stroke="#7dd3fc" stroke-opacity="0.6" stroke-width="2"/>
+                    <polygon points="170,80 230,70 250,420 190,440" fill="#fff" opacity="0.12"/>
+                    <polygon points="330,10 560,60 540,500 350,460" fill="url(#glass)" stroke="#38bdf8" stroke-opacity="0.5" stroke-width="2" opacity="0.85"/>
+                    <polygon points="30,140 130,120 150,520 50,540" fill="url(#glassDark)" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="2"/>
+                    <circle cx="140" cy="62" r="6" fill="url(#gold)"/>
+                    <circle cx="362" cy="22" r="6" fill="url(#gold)"/>
+                    <circle cx="380" cy="470" r="6" fill="url(#gold)"/>
+                    <circle cx="142" cy="518" r="6" fill="url(#gold)"/>
+                </g>
+            </svg>
+        </div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="badge"><span class="badge-dot"></span> VIDRIOS Y ALUMINIOS CASTRO - ESPECIALISTAS EN CRISTAL</div>
+            <h1>Elegancia y Resistencia en <span>Vidrio y Aluminio</span></h1>
+            <p>Ingeniería, corte exacto e instalación técnica de vidrios templados, laminados, espejos LED, perfiles de aluminio y obras en general para todo tipo de proyectos.</p>
+            <div class="hero-btns">
+                <a href="#cotizador" class="btn btn-primary">📐 Definir Medidas y Especificaciones</a>
+                <a href="https://wa.me/51982120561?text=Hola%20VIDRIOS%20Y%20ALUMINIOS%20CASTRO,%20deseo%20consultar%20por%20un%20proyecto" target="_blank" class="btn btn-secondary">💬 WhatsApp: 982 120 561</a>
+                <a href="https://wa.me/51931064785?text=Hola%20VIDRIOS%20Y%20ALUMINIOS%20CASTRO,%20deseo%20consultar%20por%20un%20proyecto" target="_blank" class="btn btn-outline-wa">💬 WhatsApp: 931 064 785</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="features-strip">
+        <div class="feature-item"><div class="feature-icon">💎</div><div class="feature-text"><h4>Vidrio Templado</h4><p>Seguridad y máxima resistencia</p></div></div>
+        <div class="feature-item"><div class="feature-icon">🛡️</div><div class="feature-text"><h4>Perfiles de Aluminio</h4><p>Marcos y acabados anticorrosivos</p></div></div>
+        <div class="feature-item"><div class="feature-icon">📐</div><div class="feature-text"><h4>Corte Exacto</h4><p>Dimensiones y biselados a medida</p></div></div>
+        <div class="feature-item"><div class="feature-icon">🚀</div><div class="feature-text"><h4>Obras en General</h4><p>Instalación, remodelación y sellado</p></div></div>
+    </div>
+
+    <section id="productos">
+        <div class="section-header">
+            <h2>Nuestros Productos en Cristal y Aluminio</h2>
+            <div class="divider"></div>
+            <p>Catálogo técnico de estructuras, perfiles de aluminio, cristales arquitectónicos y obras en general de alta resistencia.</p>
+        </div>
+
+        <div class="grid-cards" id="products-grid"></div>
+    </section>
+
+    <!-- OPINIONES DE CLIENTES -->
+    <section class="opiniones-section" id="opiniones">
+        <div class="section-header">
+            <h2>Opiniones de Nuestros Clientes</h2>
+            <div class="divider"></div>
+            <p>La experiencia de quienes ya confiaron en VIDRIOS Y ALUMINIOS CASTRO para sus proyectos.</p>
+        </div>
+
+        <div class="rating-summary" id="rating-summary">
+            <span class="rating-big" id="rating-avg">5.0</span>
+            <div>
+                <div class="rating-stars" id="rating-avg-stars">★★★★★</div>
+                <div class="rating-count" id="rating-count">0 opiniones</div>
+            </div>
+        </div>
+
+        <div class="grid-cards" id="opinions-grid"></div>
+
+        <form class="opinion-form-card" id="opinion-public-form" onsubmit="event.preventDefault(); sendOpinionWhatsapp();">
+            <h3>¿Trabajaste con nosotros? Cuéntanos tu experiencia</h3>
+            <p>Escribe tu opinión y envíala por WhatsApp. Con tu autorización, la publicaremos en esta sección.</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="pub-name">Tu nombre</label>
+                    <input type="text" id="pub-name" class="form-control" placeholder="Nombre y apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="pub-rating">Calificación</label>
+                    <select id="pub-rating" class="form-control">
+                        <option value="5">★★★★★ (5) Excelente</option>
+                        <option value="4">★★★★☆ (4) Muy bueno</option>
+                        <option value="3">★★★☆☆ (3) Bueno</option>
+                        <option value="2">★★☆☆☆ (2) Regular</option>
+                        <option value="1">★☆☆☆☆ (1) Malo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pub-project">¿Qué trabajo te realizamos? (opcional)</label>
+                <input type="text" id="pub-project" class="form-control" placeholder="Ej. Mampara de baño, ventanas, barandas...">
+            </div>
+            <div class="form-group">
+                <label for="pub-text">Tu opinión</label>
+                <textarea id="pub-text" class="form-control" placeholder="Cuéntanos cómo fue la atención, la instalación y el resultado..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">💬 Enviar mi opinión por WhatsApp</button>
+        </form>
+    </section>
+
+    <!-- CALCULADORA TÉCNICA -->
+    <section class="calculator-section" id="cotizador">
+        <div class="section-header">
+            <h2>Calculadora Técnica y Medidas</h2>
+            <div class="divider"></div>
+            <p>Ingresa las dimensiones de tu proyecto para calcular el área total, estimar el peso del cristal y enviar tus especificaciones por WhatsApp.</p>
+        </div>
+
+        <div class="calc-wrapper">
+            <form class="calc-form" id="calc-form" onsubmit="event.preventDefault(); sendWhatsapp();">
+                <div class="form-group">
+                    <label for="producto">Tipo de Producto / Servicio</label>
+                    <select id="producto" class="form-control" onchange="updateCalculator()"></select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ancho">Ancho (metros)</label>
+                        <input type="number" id="ancho" class="form-control" value="1.50" min="0.1" max="20" step="0.05" oninput="updateCalculator()">
+                    </div>
+                    <div class="form-group">
+                        <label for="alto">Alto (metros)</label>
+                        <input type="number" id="alto" class="form-control" value="1.20" min="0.1" max="20" step="0.05" oninput="updateCalculator()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad de piezas / vanos</label>
+                        <input type="number" id="cantidad" class="form-control" value="1" min="1" max="200" step="1" oninput="updateCalculator()">
+                    </div>
+                    <div class="form-group">
+                        <label for="espesor">Espesor / Tipo de cristal</label>
+                        <select id="espesor" class="form-control" onchange="updateCalculator()">
+                            <option value="6|Vidrio Crudo 6 mm" selected>Vidrio Crudo 6 mm (~15 kg/m²)</option>
+                            <option value="8|Templado 8 mm">Templado 8 mm (~20 kg/m²)</option>
+                            <option value="10|Templado 10 mm">Templado 10 mm (~25 kg/m²)</option>
+                            <option value="12|Templado 12 mm">Templado 12 mm (~30 kg/m²)</option>
+                            <option value="5|Espejo 5 mm">Espejo 5 mm (~12.5 kg/m²)</option>
+                            <option value="8|Laminado Seguridad 4+4 (8 mm)">Laminado Seguridad 4+4 (~20 kg/m²)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="aluminio">Tipo de aluminio / perfil</label>
+                        <select id="aluminio" class="form-control" onchange="updateCalculator()">
+                            <optgroup label="Acabados / Colores">
+                                <option value="Aluminio Natural (anodizado mate)|#cbd5e1" selected>Aluminio Natural (anodizado mate)</option>
+                                <option value="Aluminio Negro Mate|#1f2937">Aluminio Negro Mate</option>
+                                <option value="Aluminio Bronce|#92400e">Aluminio Bronce</option>
+                                <option value="Aluminio Champagne|#d6b98c">Aluminio Champagne</option>
+                                <option value="Aluminio Blanco (pintura electrostática)|#f8fafc">Aluminio Blanco (pintura electrostática)</option>
+                                <option value="Aluminio Gris Antracita|#475569">Aluminio Gris Antracita</option>
+                                <option value="Aluminio Imitación Madera|#a16207">Aluminio Imitación Madera</option>
+                            </optgroup>
+                            <optgroup label="Líneas / Series de perfil">
+                                <option value="Línea Corrediza Serie 20 / 25|#cbd5e1">Línea Corrediza Serie 20 / 25</option>
+                                <option value="Línea Corrediza Serie 40 (reforzada)|#cbd5e1">Línea Corrediza Serie 40 (reforzada)</option>
+                                <option value="Línea Proyectante / Abatible|#cbd5e1">Línea Proyectante / Abatible</option>
+                                <option value="Perfil Estructural Muro Cortina|#94a3b8">Perfil Estructural Muro Cortina</option>
+                                <option value="Perfil con Rotura de Puente Térmico (RPT)|#94a3b8">Perfil con Rotura de Puente Térmico (RPT)</option>
+                            </optgroup>
+                            <optgroup label="Otros">
+                                <option value="Sin aluminio (solo cristal)|transparent">Sin aluminio (solo cristal)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notas">Detalles adicionales (color de aluminio, ubicación, instalación)</label>
+                    <textarea id="notas" class="form-control" placeholder="Ej. Aluminio negro mate, segundo piso, incluye instalación y sellado..." oninput="updateCalculator()"></textarea>
+                </div>
+            </form>
+
+            <div class="calc-results">
+                <div>
+                    <div class="calc-preview">
+                        <div class="preview-glass-sheet" id="preview-sheet" style="width: 120px; height: 85px;">
+                            <span id="preview-label">1.50m × 1.20m</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-box-container">
+                        <div class="metric-box">
+                            <div class="metric-label">Área Total</div>
+                            <div class="metric-value" id="res-area">1.80 m²</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Peso Aprox. Cristal</div>
+                            <div class="metric-value" id="res-peso">27.0 kg</div>
+                        </div>
+                    </div>
+
+                    <ul class="summary-list">
+                        <li class="summary-item"><span>Producto:</span><span id="res-prod">Ventanas Herméticas de Aluminio</span></li>
+                        <li class="summary-item"><span>Dimensiones:</span><span id="res-dims">1.50 m × 1.20 m (×1)</span></li>
+                        <li class="summary-item"><span>Material:</span><span id="res-mat">Vidrio Crudo 6 mm</span></li>
+                        <li class="summary-item"><span>Aluminio:</span><span id="res-alu">Aluminio Natural (anodizado mate)</span></li>
+                    </ul>
+                </div>
+
+                <div class="wa-dual-btns">
+                    <button type="button" class="btn btn-secondary" onclick="sendWhatsapp('51982120561')">
+                        💬 Enviar Cotización al 982 120 561
+                    </button>
+                    <button type="button" class="btn btn-outline-wa" onclick="sendWhatsapp('51931064785')">
+                        💬 Enviar Cotización al 931 064 785
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+        <div class="section-header">
+            <h2>Contacto Directo</h2>
+            <div class="divider"></div>
+            <p>Comunícate con VIDRIOS Y ALUMINIOS CASTRO para asesoría técnica, visitas a obra y presupuestos.</p>
+        </div>
+
+        <div class="contact-card">
+            <h3>Atención y Cotizaciones</h3>
+            <p style="color: var(--texto-mutado); margin-top: 8px;">Elige cualquiera de nuestras líneas disponibles para llamada o WhatsApp.</p>
+
+            <div class="numbers-list">
+                <div class="phone-box">
+                    <span class="phone-tag">Línea Principal</span>
+                    <div class="phone-number">982 120 561</div>
+                    <div class="phone-actions">
+                        <a href="tel:+51982120561" class="btn btn-primary">📞 Llamar</a>
+                        <a href="https://wa.me/51982120561?text=Hola%20VIDRIOS%20Y%20ALUMINIOS%20CASTRO,%20deseo%20solicitar%20una%20cotizaci%C3%B3n." target="_blank" class="btn btn-secondary">💬 WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="phone-box">
+                    <span class="phone-tag">Línea Alterna</span>
+                    <div class="phone-number">931 064 785</div>
+                    <div class="phone-actions">
+                        <a href="tel:+51931064785" class="btn btn-primary">📞 Llamar</a>
+                        <a href="https://wa.me/51931064785?text=Hola%20VIDRIOS%20Y%20ALUMINIOS%20CASTRO,%20deseo%20solicitar%20una%20cotizaci%C3%B3n." target="_blank" class="btn btn-secondary">💬 WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p><strong>VIDRIOS Y ALUMINIOS CASTRO</strong> — Vidriería, Perfilería de Aluminio y Acabados Arquitectónicos</p>
+        <p>Teléfonos / WhatsApp: 982 120 561 · 931 064 785 · <a href="javascript:void(0)" onclick="toggleAdminAccess()" style="color: var(--celeste-vidrio); text-decoration: underline;">Administrar catálogo</a></p>
+    </footer>
+
+    <script>
+        // ================= CONFIGURACIÓN ADMIN =================
+        const ADMIN_PASS = 'castro2026'; // <-- Cambia aquí tu contraseña si deseas
+        const STORAGE_KEY = 'castro_productos_v2';
+        const OPINIONS_KEY = 'castro_opiniones_v1';
+        const OWNER_PHONE = '51982120561'; // WhatsApp que recibe las opiniones
+        let isAdminLogged = false;
+
+        // Catálogo inicial
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 1,
+                tag: 'Vidrio crudo / DVH',
+                title: 'Ventanas Herméticas de Aluminio',
+                desc: 'Sistemas corredizos y proyectantes. Marcos reforzados de aluminio con doble vidriado y sellado acústico térmico.',
+                image: 'IMAGES/ventanas.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="85" y="26" width="230" height="178" rx="6" fill="#0b1220" stroke="url(#alu)" stroke-width="10"/><rect x="97" y="38" width="105" height="154" fill="url(#glass)" stroke="#94a3b8" stroke-width="2"/><rect x="198" y="38" width="105" height="154" fill="url(#glass)" stroke="#94a3b8" stroke-width="2"/></svg>`
+            },
+            {
+                id: 2,
+                tag: 'Templado 8 – 12 mm',
+                title: 'Puertas de Vidrio Templado',
+                desc: 'Puertas abatibles y corredizas de cristal templado de seguridad (8mm - 12mm) con conectores de acero inoxidable.',
+                image: 'IMAGES/puertas.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="130" y="22" width="140" height="180" fill="url(#glass)" stroke="#7dd3fc" stroke-width="3"/><rect x="248" y="100" width="7" height="62" rx="3.5" fill="url(#gold)"/></svg>`
+            },
+            {
+                id: 3,
+                tag: 'Esmerilado / Pavonado',
+                title: 'Mamparas para Baño y Oficinas',
+                desc: 'Divisiones de cristal esmerilado, pavonado o transparente. Sistemas corredizos con rieles de aluminio anodizado.',
+                image: 'IMAGES/MANPARA.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="62" y="24" width="276" height="9" rx="3" fill="url(#alu)"/><rect x="70" y="33" width="128" height="170" fill="url(#frost)" stroke="#cbd5e1" stroke-width="2"/><rect x="202" y="33" width="128" height="170" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/></svg>`
+            },
+            {
+                id: 4,
+                tag: 'Espejo + LED',
+                title: 'Espejos Decorativos e Iluminación LED',
+                desc: 'Cristal reflectivo de alta fidelidad, cantos pulidos o biselados y marcos de aluminio flotante con tira LED posterior.',
+                image: 'IMAGES/espejos.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="120" y="32" width="160" height="166" rx="18" fill="url(#mirror)" stroke="url(#alu)" stroke-width="4"/></svg>`
+            },
+            {
+                id: 5,
+                tag: 'Laminado de seguridad',
+                title: 'Barandillas de Cristal Templado',
+                desc: 'Sistemas de protección para escaleras, balcones y terrazas con cristal laminado o templado y anclajes metálicos.',
+                image: 'IMAGES/barandillas.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="24" y="52" width="352" height="9" rx="4.5" fill="url(#alu)"/><rect x="36" y="61" width="104" height="129" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="148" y="61" width="104" height="129" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="260" y="61" width="104" height="129" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/></svg>`
+            },
+            {
+                id: 6,
+                tag: 'Fachadas / Spider',
+                title: 'Fachadas y Muro Cortina',
+                desc: 'Envolventes arquitectónicas en vidrio templado o reflectivo con perfilería de aluminio estructural y herrajes tipo araña.',
+                image: 'IMAGES/muro-cortina.jpg',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="55" y="18" width="290" height="194" fill="#0b1220" stroke="url(#alu)" stroke-width="4"/><rect x="62" y="25" width="135" height="88" fill="url(#glass)" stroke="#7dd3fc" stroke-width="1.5"/><rect x="203" y="25" width="135" height="88" fill="url(#glass)" stroke="#7dd3fc" stroke-width="1.5"/></svg>`
+            },
+            {
+                id: 7,
+                tag: 'Techos / Coberturas',
+                title: 'Coberturas y Techos de Cristal',
+                desc: 'Tragaluces, patios y coberturas con protección UV, cristal laminado o policarbonato y estructura ligera de aluminio.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><polygon points="45,110 200,32 355,110 355,124 200,46 45,124" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2.5"/><line x1="65" y1="120" x2="65" y2="205" stroke="url(#alu)" stroke-width="6"/><line x1="335" y1="120" x2="335" y2="205" stroke="url(#alu)" stroke-width="6"/><rect x="0" y="205" width="400" height="25" fill="#0b1220"/></svg>`
+            },
+            {
+                id: 8,
+                tag: 'Instalación y Acabados',
+                title: 'Obras y Acabados en General',
+                desc: 'Medición en obra, montaje profesional, sellado con silicona estructural, mantenimiento y adecuación de espacios.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="50" y="35" width="300" height="160" rx="10" fill="rgba(15,23,42,0.75)" stroke="url(#alu)" stroke-width="3"/><rect x="75" y="60" width="110" height="110" fill="url(#glass)" stroke="#38bdf8" stroke-width="2"/><rect x="205" y="60" width="120" height="50" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/></svg>`
+            },
+            {
+                id: 9,
+                tag: 'Aluminio + Cristal',
+                title: 'Puertas de Aluminio con Vidrio',
+                desc: 'Puertas batientes y corredizas con marco de aluminio y cristal, ideales para locales, oficinas, patios y accesos principales.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="120" y="20" width="160" height="190" rx="4" fill="#0b1220" stroke="url(#alu)" stroke-width="9"/><rect x="134" y="34" width="132" height="76" fill="url(#glass)" stroke="#94a3b8" stroke-width="2"/><rect x="134" y="120" width="132" height="76" fill="url(#glass)" stroke="#94a3b8" stroke-width="2"/><rect x="250" y="108" width="6" height="30" rx="3" fill="url(#gold)"/></svg>`
+            },
+            {
+                id: 10,
+                tag: 'Divisiones / Oficinas',
+                title: 'Divisiones de Oficina en Vidrio',
+                desc: 'Tabiques de cristal con perfilería de aluminio, simples o dobles, con puertas integradas y opción de vinil o esmerilado para privacidad.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="30" y="30" width="340" height="8" fill="url(#alu)"/><rect x="30" y="192" width="340" height="8" fill="url(#alu)"/><rect x="36" y="38" width="100" height="154" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="140" y="38" width="100" height="154" fill="url(#frost)" stroke="#cbd5e1" stroke-width="2"/><rect x="244" y="38" width="100" height="154" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/></svg>`
+            },
+            {
+                id: 11,
+                tag: 'Comercial',
+                title: 'Vitrinas, Mostradores y Exhibidores',
+                desc: 'Vitrinas de cristal templado y aluminio para tiendas y negocios, con puertas corredizas, repisas de vidrio y cerraduras de seguridad.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="70" y="50" width="260" height="140" rx="4" fill="url(#glass)" stroke="url(#alu)" stroke-width="6"/><line x1="72" y1="100" x2="328" y2="100" stroke="#7dd3fc" stroke-width="3"/><line x1="72" y1="145" x2="328" y2="145" stroke="#7dd3fc" stroke-width="3"/><rect x="60" y="190" width="280" height="10" fill="url(#alu)"/></svg>`
+            },
+            {
+                id: 12,
+                tag: 'Terrazas / Balcones',
+                title: 'Cerramientos de Terraza y Balcón',
+                desc: 'Cerramientos corredizos o plegables en vidrio templado y aluminio que protegen del viento, polvo y ruido sin perder la vista.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="40" y="30" width="320" height="8" fill="url(#alu)"/><rect x="40" y="188" width="320" height="8" fill="url(#alu)"/><rect x="46" y="38" width="76" height="150" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="126" y="38" width="76" height="150" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="206" y="38" width="76" height="150" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="286" y="38" width="68" height="150" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/></svg>`
+            },
+            {
+                id: 13,
+                tag: 'Frentes de local',
+                title: 'Frentes Comerciales y Fachadas de Tienda',
+                desc: 'Escaparates y frentes de local en cristal templado con puertas de ingreso, perfilería de aluminio y opción de rejas o cortinas de seguridad.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="40" y="26" width="320" height="26" fill="url(#alu)"/><rect x="46" y="58" width="120" height="140" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="172" y="58" width="56" height="140" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="234" y="58" width="120" height="140" fill="url(#glass)" stroke="#7dd3fc" stroke-width="2"/><rect x="214" y="120" width="6" height="26" rx="3" fill="url(#gold)"/></svg>`
+            },
+            {
+                id: 14,
+                tag: 'Decorado / Privacidad',
+                title: 'Vidrio Esmerilado, Serigrafiado y Biselado',
+                desc: 'Cristales decorados con arenado, vinil, serigrafía o biselado para ventanas, puertas, paneles y muebles con diseño y privacidad.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="110" y="26" width="180" height="178" fill="url(#frost)" stroke="#cbd5e1" stroke-width="3"/><circle cx="200" cy="115" r="38" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle cx="200" cy="115" r="22" fill="none" stroke="#e2e8f0" stroke-width="2"/></svg>`
+            },
+            {
+                id: 15,
+                tag: 'Servicio técnico',
+                title: 'Reposición y Reparación de Cristales',
+                desc: 'Cambio de lunas rotas, ajuste de rodamientos, cierres, rieles y sellado de ventanas y puertas. Atención rápida a domicilio.',
+                image: '',
+                fallbackSvg: `<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><rect x="100" y="28" width="200" height="174" rx="4" fill="url(#glass)" stroke="url(#alu)" stroke-width="7"/><polyline points="200,28 188,80 214,110 190,150 204,202" fill="none" stroke="#e2e8f0" stroke-width="2.5"/><circle cx="318" cy="60" r="16" fill="none" stroke="url(#gold)" stroke-width="5"/></svg>`
+            }
+        ];
+
+        // Opiniones reales de clientes (vacío a propósito: agrégalas desde el panel Admin)
+        const DEFAULT_OPINIONS = [];
+
+        function loadProducts() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (e) {}
+            return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+        }
+
+        function loadOpinions() {
+            try {
+                const saved = localStorage.getItem(OPINIONS_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) return parsed;
+                }
+            } catch (e) {}
+            return JSON.parse(JSON.stringify(DEFAULT_OPINIONS));
+        }
+
+        let products = loadProducts();
+        let opinions = loadOpinions();
+
+        function saveProductsToStorage() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); } catch (e) {}
+        }
+        function saveOpinionsToStorage() {
+            try { localStorage.setItem(OPINIONS_KEY, JSON.stringify(opinions)); } catch (e) {}
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function starsText(n) {
+            n = Math.max(0, Math.min(5, Math.round(Number(n) || 0)));
+            return '★'.repeat(n) + '☆'.repeat(5 - n);
+        }
+
+        function renderAll() {
+            const grid = document.getElementById('products-grid');
+            const select = document.getElementById('producto');
+            const currentSelectVal = select.value;
+
+            grid.innerHTML = '';
+            select.innerHTML = '';
+
+            products.forEach((p) => {
+                const visualHtml = p.image
+                    ? `<img class="foto" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}">`
+                    : (p.fallbackSvg || DEFAULT_PRODUCTS[0].fallbackSvg);
+
+                const adminBar = isAdminLogged
+                    ? `<div class="card-admin-bar">
+                           <button type="button" class="btn btn-info btn-sm" onclick="editProduct(${p.id})">✏️ Editar</button>
+                           <button type="button" class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑️</button>
+                       </div>`
+                    : '';
+
+                const article = document.createElement('article');
+                article.className = 'card-glass';
+                article.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <span class="card-tag">${escapeHtml(p.tag)}</span>
+                        ${adminBar}
+                        ${visualHtml}
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>${escapeHtml(p.title)}</h3>
+                            <p>${escapeHtml(p.desc)}</p>
+                        </div>
+                        <span class="card-link" onclick="setProduct('${escapeHtml(p.title).replace(/'/g, "\\'")}')">Solicitar Especificación →</span>
+                    </div>
+                `;
+                grid.appendChild(article);
+
+                const opt = document.createElement('option');
+                opt.value = p.title;
+                opt.textContent = p.title;
+                select.appendChild(opt);
+            });
+
+            if (currentSelectVal && products.some(p => p.title === currentSelectVal)) {
+                select.value = currentSelectVal;
+            }
+
+            renderAdminList();
+            renderOpinions();
+            updateCalculator();
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-product-list');
+            document.getElementById('admin-count').textContent = products.length;
+            list.innerHTML = '';
+
+            products.forEach((p) => {
+                const thumbHtml = p.image
+                    ? `<img class="admin-thumb" src="${escapeHtml(p.image)}" alt="">`
+                    : `<div class="admin-thumb" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:#38bdf8;">SVG</div>`;
+
+                const item = document.createElement('div');
+                item.className = 'admin-item';
+                item.innerHTML = `
+                    <div class="admin-item-info">
+                        ${thumbHtml}
+                        <div class="admin-item-text">
+                            <h4>${escapeHtml(p.title)}</h4>
+                            <span>${escapeHtml(p.tag)} · ${escapeHtml((p.image || 'Ilustración SVG').slice(0, 40))}</span>
+                        </div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button type="button" class="btn btn-info btn-sm" onclick="editProduct(${p.id})">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Borrar</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // ================= OPINIONES =================
+        function renderOpinions() {
+            const grid = document.getElementById('opinions-grid');
+            const summary = document.getElementById('rating-summary');
+            grid.innerHTML = '';
+
+            if (!opinions.length) {
+                grid.innerHTML = `<div class="opinion-empty">Aún no hay opiniones publicadas. ¡Sé el primero en contarnos tu experiencia con nosotros!</div>`;
+                summary.classList.remove('show');
+            } else {
+                opinions.forEach((o) => {
+                    const initial = escapeHtml((o.name || '?').trim().charAt(0).toUpperCase());
+                    const card = document.createElement('article');
+                    card.className = 'opinion-card';
+                    card.innerHTML = `
+                        <div class="opinion-stars">${starsText(o.rating)}</div>
+                        <p class="opinion-text">“${escapeHtml(o.text)}”</p>
+                        <div class="opinion-author">
+                            <div class="opinion-avatar">${initial}</div>
+                            <div>
+                                <h4>${escapeHtml(o.name)}</h4>
+                                ${o.project ? `<span>${escapeHtml(o.project)}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                const avg = opinions.reduce((s, o) => s + (Number(o.rating) || 0), 0) / opinions.length;
+                document.getElementById('rating-avg').textContent = avg.toFixed(1);
+                document.getElementById('rating-avg-stars').textContent = starsText(avg);
+                document.getElementById('rating-count').textContent =
+                    `${opinions.length} ${opinions.length === 1 ? 'opinión' : 'opiniones'}`;
+                summary.classList.add('show');
+            }
+            renderAdminOpinionList();
+        }
+
+        function renderAdminOpinionList() {
+            const list = document.getElementById('admin-opinion-list');
+            document.getElementById('op-count').textContent = opinions.length;
+            list.innerHTML = '';
+            if (!opinions.length) {
+                list.innerHTML = `<p class="admin-hint">Todavía no hay opiniones. Agrega la primera con el formulario.</p>`;
+                return;
+            }
+            opinions.forEach((o) => {
+                const item = document.createElement('div');
+                item.className = 'admin-item';
+                item.innerHTML = `
+                    <div class="admin-item-info">
+                        <div class="admin-item-text">
+                            <h4>${escapeHtml(o.name)} · ${starsText(o.rating)}</h4>
+                            <span>${escapeHtml((o.text || '').slice(0, 70))}${(o.text || '').length > 70 ? '…' : ''}</span>
+                        </div>
+                    </div>
+                    <div class="admin-item-actions">
+                        <button type="button" class="btn btn-info btn-sm" onclick="editOpinion(${o.id})">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteOpinion(${o.id})">Borrar</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function prepareNewOpinion() {
+            document.getElementById('op-form-title').textContent = 'Agregar Opinión de Cliente';
+            document.getElementById('op-edit-id').value = '';
+            document.getElementById('op-name').value = '';
+            document.getElementById('op-rating').value = '5';
+            document.getElementById('op-project').value = '';
+            document.getElementById('op-text').value = '';
+        }
+
+        function editOpinion(id) {
+            const o = opinions.find(x => x.id === id);
+            if (!o) return;
+            document.getElementById('op-form-title').textContent = 'Editando opinión de ' + o.name;
+            document.getElementById('op-edit-id').value = o.id;
+            document.getElementById('op-name').value = o.name;
+            document.getElementById('op-rating').value = String(o.rating);
+            document.getElementById('op-project').value = o.project || '';
+            document.getElementById('op-text').value = o.text;
+        }
+
+        function saveOpinionFromAdmin() {
+            const idVal = document.getElementById('op-edit-id').value;
+            const name = document.getElementById('op-name').value.trim();
+            const rating = parseInt(document.getElementById('op-rating').value, 10) || 5;
+            const project = document.getElementById('op-project').value.trim();
+            const text = document.getElementById('op-text').value.trim();
+            if (!name || !text) return;
+
+            if (idVal) {
+                const idx = opinions.findIndex(o => o.id === Number(idVal));
+                if (idx !== -1) opinions[idx] = { ...opinions[idx], name, rating, project, text };
+            } else {
+                const newId = opinions.length ? Math.max(...opinions.map(o => o.id)) + 1 : 1;
+                opinions.push({ id: newId, name, rating, project, text });
+            }
+            saveOpinionsToStorage();
+            prepareNewOpinion();
+            renderOpinions();
+            alert('¡Opinión guardada! Recuerda descargar el INDEX.HTML actualizado para publicarla para todos.');
+        }
+
+        function deleteOpinion(id) {
+            if (!confirm('¿Eliminar esta opinión?')) return;
+            opinions = opinions.filter(o => o.id !== id);
+            saveOpinionsToStorage();
+            prepareNewOpinion();
+            renderOpinions();
+        }
+
+        function sendOpinionWhatsapp() {
+            const name = document.getElementById('pub-name').value.trim();
+            const rating = document.getElementById('pub-rating').value;
+            const project = document.getElementById('pub-project').value.trim();
+            const text = document.getElementById('pub-text').value.trim();
+            let msg = `Hola *VIDRIOS Y ALUMINIOS CASTRO*, quiero dejar mi opinión:\n\n` +
+                      `• *Nombre:* ${name}\n` +
+                      `• *Calificación:* ${starsText(rating)} (${rating}/5)\n`;
+            if (project) msg += `• *Trabajo realizado:* ${project}\n`;
+            msg += `• *Opinión:* ${text}\n\nAutorizo que la publiquen en su página web.`;
+            window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        }
+
+        // ================= ACCIONES DEL ADMIN =================
+        function toggleAdminAccess() {
+            if (isAdminLogged) {
+                const panel = document.getElementById('admin-panel');
+                panel.classList.toggle('open');
+                if (panel.classList.contains('open')) {
+                    panel.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                document.getElementById('admin-login-error').style.display = 'none';
+                document.getElementById('admin-pass-input').value = '';
+                document.getElementById('admin-login-modal').classList.add('open');
+                setTimeout(() => document.getElementById('admin-pass-input').focus(), 100);
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('admin-login-modal').classList.remove('open');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if (pass === ADMIN_PASS) {
+                isAdminLogged = true;
+                closeLoginModal();
+                document.getElementById('btn-open-admin').classList.add('active-admin');
+                document.getElementById('btn-open-admin').textContent = '⚙️ Admin (Activo)';
+                const panel = document.getElementById('admin-panel');
+                panel.classList.add('open');
+                if (products.length > 0) editProduct(products[0].id);
+                renderAll();
+                panel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('admin-login-error').style.display = 'block';
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLogged = false;
+            document.getElementById('admin-panel').classList.remove('open');
+            document.getElementById('btn-open-admin').classList.remove('active-admin');
+            document.getElementById('btn-open-admin').textContent = '⚙️ Admin';
+            renderAll();
+        }
+
+        function prepareNewProduct() {
+            document.getElementById('admin-form-title').textContent = 'Agregar Nuevo Producto';
+            document.getElementById('edit-product-id').value = '';
+            document.getElementById('edit-title').value = '';
+            document.getElementById('edit-tag').value = '';
+            document.getElementById('edit-desc').value = '';
+            document.getElementById('edit-image').value = '';
+            document.getElementById('edit-image-file').value = '';
+        }
+
+        function editProduct(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('admin-form-title').textContent = 'Editando: ' + p.title;
+            document.getElementById('edit-product-id').value = p.id;
+            document.getElementById('edit-title').value = p.title;
+            document.getElementById('edit-tag').value = p.tag;
+            document.getElementById('edit-desc').value = p.desc;
+            document.getElementById('edit-image').value = p.image || '';
+            document.getElementById('edit-image-file').value = '';
+            document.getElementById('admin-panel').classList.add('open');
+            document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('edit-image').value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProductFromAdmin() {
+            const idVal = document.getElementById('edit-product-id').value;
+            const title = document.getElementById('edit-title').value.trim();
+            const tag = document.getElementById('edit-tag').value.trim();
+            const desc = document.getElementById('edit-desc').value.trim();
+            const image = document.getElementById('edit-image').value.trim();
+
+            if (!title) return;
+
+            if (idVal) {
+                const idx = products.findIndex(p => p.id === Number(idVal));
+                if (idx !== -1) {
+                    products[idx] = { ...products[idx], title, tag, desc, image };
+                }
+            } else {
+                const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                products.push({
+                    id: newId,
+                    tag,
+                    title,
+                    desc,
+                    image,
+                    fallbackSvg: DEFAULT_PRODUCTS[0].fallbackSvg
+                });
+            }
+
+            saveProductsToStorage();
+            renderAll();
+            alert('¡Producto guardado correctamente!');
+        }
+
+        function deleteProduct(id) {
+            if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+            products = products.filter(p => p.id !== id);
+            saveProductsToStorage();
+            prepareNewProduct();
+            renderAll();
+        }
+
+        function resetDefaultProducts() {
+            if (!confirm('¿Restaurar los productos originales? Se perderán las ediciones locales de productos.')) return;
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+            products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            prepareNewProduct();
+            renderAll();
+        }
+
+        function exportUpdatedHTML() {
+            // Copia del HTML actual con productos y opiniones incrustados
+            let docHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const serializedProducts = JSON.stringify(products, null, 12);
+            const serializedOpinions = JSON.stringify(opinions, null, 12);
+            docHtml = docHtml
+                .replace(/const DEFAULT_PRODUCTS = \[[\s\S]*?\];/, () => `const DEFAULT_PRODUCTS = ${serializedProducts};`)
+                .replace(/const DEFAULT_OPINIONS = \[[\s\S]*?\];/, () => `const DEFAULT_OPINIONS = ${serializedOpinions};`);
+            const blob = new Blob([docHtml], { type: 'text/html;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'INDEX.HTML';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // ================= MENÚ Y CALCULADORA =================
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        menuBtn.addEventListener('click', () => navMenu.classList.toggle('active'));
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => navMenu.classList.remove('active'));
+        });
+
+        function setProduct(productName) {
+            const select = document.getElementById('producto');
+            select.value = productName;
+            updateCalculator();
+            document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCalculator() {
+            const prod = document.getElementById('producto').value || '';
+            const ancho = Math.max(0.1, parseFloat(document.getElementById('ancho').value) || 0);
+            const alto = Math.max(0.1, parseFloat(document.getElementById('alto').value) || 0);
+            const cant = Math.max(1, parseInt(document.getElementById('cantidad').value, 10) || 1);
+            const [mmStr, matName] = document.getElementById('espesor').value.split('|');
+            const mm = parseFloat(mmStr) || 6;
+            const [aluName, aluColor] = document.getElementById('aluminio').value.split('|');
+
+            const kgPorM2 = mm * 2.5;
+            const areaTotal = ancho * alto * cant;
+            const pesoTotal = areaTotal * kgPorM2;
+
+            document.getElementById('res-area').textContent = `${areaTotal.toFixed(2)} m²`;
+            document.getElementById('res-peso').textContent = `${pesoTotal.toFixed(1)} kg`;
+            document.getElementById('res-prod').textContent = prod;
+            document.getElementById('res-dims').textContent = `${ancho.toFixed(2)} m × ${alto.toFixed(2)} m (×${cant})`;
+            document.getElementById('res-mat').textContent = matName;
+            document.getElementById('res-alu').textContent = aluName;
+
+            const ratio = ancho / alto;
+            let w = 120, h = 85;
+            if (ratio >= 1) {
+                w = Math.min(170, Math.max(60, 110 * Math.min(ratio, 1.5)));
+                h = Math.min(98, Math.max(40, w / ratio));
+            } else {
+                h = Math.min(98, Math.max(50, 85 * Math.min(1 / ratio, 1.6)));
+                w = Math.min(170, Math.max(40, h * ratio));
+            }
+            const sheet = document.getElementById('preview-sheet');
+            sheet.style.width = `${w}px`;
+            sheet.style.height = `${h}px`;
+            sheet.style.setProperty('--alu-color', aluColor || '#cbd5e1');
+            document.getElementById('preview-label').textContent = `${ancho.toFixed(2)}m × ${alto.toFixed(2)}m`;
+        }
+
+        function buildWhatsappMessage() {
+            const prod = document.getElementById('producto').value;
+            const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+            const alto = parseFloat(document.getElementById('alto').value) || 0;
+            const cant = parseInt(document.getElementById('cantidad').value, 10) || 1;
+            const [, matName] = document.getElementById('espesor').value.split('|');
+            const [aluName] = document.getElementById('aluminio').value.split('|');
+            const notas = document.getElementById('notas').value.trim();
+            const area = document.getElementById('res-area').textContent;
+            const peso = document.getElementById('res-peso').textContent;
+
+            let msg = `Hola *VIDRIOS Y ALUMINIOS CASTRO*, deseo solicitar una cotización:\n\n` +
+                      `• *Producto:* ${prod}\n` +
+                      `• *Medidas:* ${ancho.toFixed(2)} m × ${alto.toFixed(2)} m\n` +
+                      `• *Cantidad:* ${cant}\n` +
+                      `• *Cristal:* ${matName}\n` +
+                      `• *Aluminio:* ${aluName}\n` +
+                      `• *Área estimada:* ${area}\n` +
+                      `• *Peso aprox.:* ${peso}`;
+
+            if (notas) msg += `\n• *Detalles:* ${notas}`;
+            return encodeURIComponent(msg);
+        }
+
+        function sendWhatsapp(phone = '51982120561') {
+            const url = `https://wa.me/${phone}?text=${buildWhatsappMessage()}`;
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        // Inicializar página
+        renderAll();
+    </script>
+</body>
+</html>
